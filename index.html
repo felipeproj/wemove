@@ -206,7 +206,7 @@ main{max-width:1100px;margin:0 auto;padding:28px 24px}
     <div id="dash-content"></div>
   </div>
 </main>
- 
+
 <!-- MODAL ADICIONAR/EDITAR -->
 <div id="modal-form" class="modal-overlay" style="display:none" onclick="overlayClick(event,'modal-form')">
   <div class="modal">
@@ -271,7 +271,7 @@ main{max-width:1100px;margin:0 auto;padding:28px 24px}
     </div>
   </div>
 </div>
- 
+
 <!-- MODAL COMPRA -->
 <div id="modal-compra" class="modal-overlay" style="display:none" onclick="overlayClick(event,'modal-compra')">
   <div class="modal">
@@ -291,7 +291,7 @@ main{max-width:1100px;margin:0 auto;padding:28px 24px}
     </div>
   </div>
 </div>
- 
+
 <!-- MODAL CONFIRM -->
 <div id="modal-confirm" class="modal-overlay" style="display:none">
   <div class="confirm-box">
@@ -303,88 +303,113 @@ main{max-width:1100px;margin:0 auto;padding:28px 24px}
     </div>
   </div>
 </div>
- 
+
 <script>
-const STORAGE_KEY='wemove_novais_v1';
+const API='https://api.wemoveapp.co';
 const INITIAL_DATA=[
-  {id:1,amb:'Sala',nome:'Sofá',cat:'Essencial',pri:'Alta',obs:'2 ou 3 lugares. Para sala de ~18 m² prefira sofá de até 2,20 m de largura.',qtd:1,min:1200,max:4000,comprado:false,gasto:0,loja:''},
-  {id:2,amb:'Sala',nome:'Mesa de centro / mesinha lateral',cat:'Não Essencial',pri:'Média',obs:'Complementa o sofá; prefira modelos com tampo de vidro ou baixos.',qtd:1,min:200,max:800,comprado:false,gasto:0,loja:''},
-  {id:3,amb:'Sala',nome:'Rack / painel para TV',cat:'Essencial',pri:'Alta',obs:'Painéis de 1,60–2,00 m são adequados para a sala.',qtd:1,min:400,max:2000,comprado:false,gasto:0,loja:''},
-  {id:4,amb:'Sala',nome:'TV',cat:'Essencial',pri:'Alta',obs:'Para sala ~18 m², TV de 50"-55" é confortável.',qtd:1,min:1500,max:4500,comprado:false,gasto:0,loja:''},
-  {id:5,amb:'Sala',nome:'Luminária de pé / pendente',cat:'Não Essencial',pri:'Baixa',obs:'Iluminação de ambiente; complementar às luminárias embutidas.',qtd:1,min:150,max:600,comprado:false,gasto:0,loja:''},
-  {id:6,amb:'Sala',nome:'Tapete',cat:'Não Essencial',pri:'Baixa',obs:'Define a área de estar. Prefira 1,60×2,30 m para sofá de 3 lugares.',qtd:1,min:200,max:1200,comprado:false,gasto:0,loja:''},
-  {id:7,amb:'Sala',nome:'Aparador / buffet',cat:'Não Essencial',pri:'Baixa',obs:'Armazenamento extra na sala.',qtd:1,min:400,max:1800,comprado:false,gasto:0,loja:''},
-  {id:8,amb:'Cozinha',nome:'Geladeira',cat:'Essencial',pri:'Alta',obs:'Prefira modelos de 260–330 L, largura máx 60 cm. Evite side-by-side ou acima de 400 L.',qtd:1,min:1800,max:3500,comprado:false,gasto:0,loja:''},
-  {id:9,amb:'Cozinha',nome:'Fogão',cat:'Essencial',pri:'Alta',obs:'Fogão 4 bocas (55 cm larg.) com forno integrado.',qtd:1,min:600,max:2000,comprado:false,gasto:0,loja:''},
-  {id:10,amb:'Cozinha',nome:'Micro-ondas',cat:'Essencial',pri:'Alta',obs:'20–32 L suficiente para casal. Verifique nicho ou espaço no balcão.',qtd:1,min:350,max:1000,comprado:false,gasto:0,loja:''},
-  {id:11,amb:'Cozinha',nome:'Depurador / Coifa',cat:'Essencial',pri:'Alta',obs:'Depurador recirculante dispensa duto; coifa exige instalação de duto.',qtd:1,min:400,max:1800,comprado:false,gasto:0,loja:''},
-  {id:12,amb:'Cozinha',nome:'Lava-louças',cat:'Não Essencial',pri:'Baixa',obs:'Modelos compactos 6 serviços cabem em bancadas menores.',qtd:1,min:1200,max:3000,comprado:false,gasto:0,loja:''},
-  {id:13,amb:'Cozinha',nome:'Mesa de jantar',cat:'Essencial',pri:'Alta',obs:'4 lugares aprox. 1,20×0,80 m. Extensível é ótima opção.',qtd:1,min:600,max:2500,comprado:false,gasto:0,loja:''},
-  {id:14,amb:'Cozinha',nome:'Cadeiras',cat:'Essencial',pri:'Alta',obs:'4 cadeiras para a mesa de jantar.',qtd:4,min:150,max:500,comprado:false,gasto:0,loja:''},
-  {id:15,amb:'Cozinha',nome:'Banquetas para bancada',cat:'Não Essencial',pri:'Baixa',obs:'2 banquetas se houver bancada/ilha para sentar.',qtd:2,min:120,max:400,comprado:false,gasto:0,loja:''},
-  {id:16,amb:'Cozinha',nome:'Lixeira com pedal',cat:'Essencial',pri:'Média',obs:'12–15 L para uso diário na cozinha.',qtd:1,min:60,max:200,comprado:false,gasto:0,loja:''},
-  {id:17,amb:'Cozinha',nome:'Copos',cat:'Essencial',pri:'Alta',obs:'Kit com 6–8 unidades. Considere copos para água, suco e vinho. Vidro temperado é mais durável.',qtd:1,min:40,max:180,comprado:false,gasto:0,loja:''},
-  {id:18,amb:'Cozinha',nome:'Pratos',cat:'Essencial',pri:'Alta',obs:'Jogo com 6–8 peças (raso, fundo e sobremesa). Cerâmica ou porcelana são os mais práticos.',qtd:1,min:60,max:300,comprado:false,gasto:0,loja:''},
-  {id:19,amb:'Quarto Casal',nome:'Cama box casal/queen',cat:'Essencial',pri:'Alta',obs:'Queen (1,58×1,98 m) ideal para quartos de 10–12 m².',qtd:1,min:800,max:3500,comprado:false,gasto:0,loja:''},
-  {id:20,amb:'Quarto Casal',nome:'Colchão',cat:'Essencial',pri:'Alta',obs:'D33–D45, Queen 1,58×1,98 m. Invista em boa qualidade.',qtd:1,min:800,max:3000,comprado:false,gasto:0,loja:''},
-  {id:21,amb:'Quarto Casal',nome:'Criado-mudo (x2)',cat:'Não Essencial',pri:'Média',obs:'Modelos estreitos 40–45 cm de profundidade.',qtd:2,min:150,max:600,comprado:false,gasto:0,loja:''},
-  {id:22,amb:'Quarto Casal',nome:'Cômoda / gaveteiro',cat:'Não Essencial',pri:'Baixa',obs:'5–6 gavetas (80–100 cm larg.) costuma bastar.',qtd:1,min:400,max:1500,comprado:false,gasto:0,loja:''},
-  {id:23,amb:'Quarto Casal',nome:'Espelho de parede',cat:'Essencial',pri:'Média',obs:'Espelho de corpo inteiro 40×160 cm ou painel.',qtd:1,min:150,max:700,comprado:false,gasto:0,loja:''},
-  {id:24,amb:'Quarto Casal',nome:'Abajur / luminária de cabeceira (x2)',cat:'Não Essencial',pri:'Baixa',obs:'Iluminação direcional para cada lado da cama.',qtd:2,min:80,max:300,comprado:false,gasto:0,loja:''},
-  {id:25,amb:'Escritório',nome:'Mesa de escritório',cat:'Essencial',pri:'Alta',obs:'Mesa em L (1,50×1,20 m) ou duas mesas de 1,20 m para 2 pessoas.',qtd:1,min:500,max:2500,comprado:false,gasto:0,loja:''},
-  {id:26,amb:'Escritório',nome:'Cadeiras ergonômicas (x2)',cat:'Essencial',pri:'Alta',obs:'Apoio lombar e ajuste de altura são essenciais.',qtd:2,min:400,max:2000,comprado:false,gasto:0,loja:''},
-  {id:27,amb:'Escritório',nome:'Monitores curvos (x2)',cat:'Essencial',pri:'Alta',obs:'27"–32". Verifique HDMI/DisplayPort. Suporte articulado recomendado.',qtd:2,min:800,max:2500,comprado:false,gasto:0,loja:''},
-  {id:28,amb:'Escritório',nome:'Estante / prateleiras',cat:'Não Essencial',pri:'Média',obs:'Para livros e organização. Modelos de parede economizam espaço.',qtd:1,min:200,max:800,comprado:false,gasto:0,loja:''},
-  {id:29,amb:'Área de Serviço',nome:'Máquina de lavar roupa',cat:'Essencial',pri:'Alta',obs:'10–12 kg para casal. Largura padrão 60 cm.',qtd:1,min:1200,max:3500,comprado:false,gasto:0,loja:''},
-  {id:30,amb:'Área de Serviço',nome:'Tanque de lavar',cat:'Essencial',pri:'Média',obs:'Verifique se já existe instalação. ~50×40 cm.',qtd:1,min:150,max:500,comprado:false,gasto:0,loja:''},
-  {id:31,amb:'Área de Serviço',nome:'Ferro de passar + suporte',cat:'Essencial',pri:'Média',obs:'Ferro a vapor com suporte retrátil ou tábua.',qtd:1,min:100,max:400,comprado:false,gasto:0,loja:''},
-  {id:32,amb:'Área de Serviço',nome:'Armário de área de serviço',cat:'Não Essencial',pri:'Média',obs:'Para armazenar produtos de limpeza.',qtd:1,min:100,max:400,comprado:false,gasto:0,loja:''},
-  {id:33,amb:'Banheiro / Lavabo',nome:'Espelho / armário espelhado',cat:'Essencial',pri:'Alta',obs:'Para cada banheiro. Armário espelhado amplia percepção de espaço.',qtd:2,min:100,max:500,comprado:false,gasto:0,loja:''},
-  {id:34,amb:'Banheiro / Lavabo',nome:'Suporte para papel higiênico',cat:'Essencial',pri:'Alta',obs:'Simples de parede. Verifique se já vem instalado.',qtd:2,min:30,max:100,comprado:false,gasto:0,loja:''},
-  {id:35,amb:'Banheiro / Lavabo',nome:'Porta-toalhas',cat:'Essencial',pri:'Alta',obs:'Barra de parede para toalha de rosto e banho.',qtd:2,min:40,max:150,comprado:false,gasto:0,loja:''},
-  {id:36,amb:'Banheiro / Lavabo',nome:'Lixeira pequena',cat:'Essencial',pri:'Média',obs:'5–7 L para cada banheiro.',qtd:2,min:20,max:80,comprado:false,gasto:0,loja:''},
-  {id:37,amb:'Geral / Tecnologia',nome:'Roteador Wi-Fi',cat:'Essencial',pri:'Alta',obs:'1 roteador dual-band cobre 68 m².',qtd:1,min:150,max:600,comprado:false,gasto:0,loja:''},
-  {id:38,amb:'Geral / Tecnologia',nome:'Régua de tomadas',cat:'Essencial',pri:'Alta',obs:'3–4 réguas com proteção contra surto.',qtd:4,min:40,max:150,comprado:false,gasto:0,loja:''},
-  {id:39,amb:'Geral / Tecnologia',nome:'Aspirador de pó',cat:'Essencial',pri:'Média',obs:'Aspirador sem fio ou robô para 68 m².',qtd:1,min:300,max:2000,comprado:false,gasto:0,loja:''},
-  {id:40,amb:'Geral / Tecnologia',nome:'Ar-condicionado split',cat:'Essencial',pri:'Alta',obs:'Sala: 9.000–12.000 BTU; quartos: 7.000–9.000 BTU cada.',qtd:3,min:1200,max:3500,comprado:false,gasto:0,loja:''},
-  {id:41,amb:'Geral / Tecnologia',nome:'Luminária teto / pendentes',cat:'Essencial',pri:'Alta',obs:'Verifique pontos de luz instalados em cada cômodo.',qtd:4,min:80,max:400,comprado:false,gasto:0,loja:''},
-  {id:42,amb:'Geral / Tecnologia',nome:'Cortinas ou persianas',cat:'Essencial',pri:'Alta',obs:'Blackout nos quartos melhora o sono. Meça as janelas antes.',qtd:4,min:150,max:800,comprado:false,gasto:0,loja:''},
-  {id:43,amb:'Geral / Tecnologia',nome:'Caixa de ferramentas',cat:'Não Essencial',pri:'Média',obs:'Kit básico: martelo, chaves, alicate, fita métrica.',qtd:1,min:80,max:300,comprado:false,gasto:0,loja:''},
-  {id:44,amb:'Geral / Tecnologia',nome:'Parafusadeira elétrica',cat:'Não Essencial',pri:'Média',obs:'Parafusadeira/furadeira bivolt. Útil na montagem de móveis.',qtd:1,min:150,max:600,comprado:false,gasto:0,loja:''},
+  {amb:'Sala',nome:'Sofá',cat:'Essencial',pri:'Alta',obs:'2 ou 3 lugares. Para sala de ~18 m² prefira sofá de até 2,20 m de largura.',qtd:1,min:1200,max:4000},
+  {amb:'Sala',nome:'Mesa de centro / mesinha lateral',cat:'Não Essencial',pri:'Média',obs:'Complementa o sofá; prefira modelos com tampo de vidro ou baixos.',qtd:1,min:200,max:800},
+  {amb:'Sala',nome:'Rack / painel para TV',cat:'Essencial',pri:'Alta',obs:'Painéis de 1,60–2,00 m são adequados para a sala.',qtd:1,min:400,max:2000},
+  {amb:'Sala',nome:'TV',cat:'Essencial',pri:'Alta',obs:'Para sala ~18 m², TV de 50"-55" é confortável.',qtd:1,min:1500,max:4500},
+  {amb:'Sala',nome:'Luminária de pé / pendente',cat:'Não Essencial',pri:'Baixa',obs:'Iluminação de ambiente; complementar às luminárias embutidas.',qtd:1,min:150,max:600},
+  {amb:'Sala',nome:'Tapete',cat:'Não Essencial',pri:'Baixa',obs:'Define a área de estar. Prefira 1,60×2,30 m para sofá de 3 lugares.',qtd:1,min:200,max:1200},
+  {amb:'Sala',nome:'Aparador / buffet',cat:'Não Essencial',pri:'Baixa',obs:'Armazenamento extra na sala.',qtd:1,min:400,max:1800},
+  {amb:'Cozinha',nome:'Geladeira',cat:'Essencial',pri:'Alta',obs:'Prefira modelos de 260–330 L, largura máx 60 cm. Evite side-by-side ou acima de 400 L.',qtd:1,min:1800,max:3500},
+  {amb:'Cozinha',nome:'Fogão',cat:'Essencial',pri:'Alta',obs:'Fogão 4 bocas (55 cm larg.) com forno integrado.',qtd:1,min:600,max:2000},
+  {amb:'Cozinha',nome:'Micro-ondas',cat:'Essencial',pri:'Alta',obs:'20–32 L suficiente para casal. Verifique nicho ou espaço no balcão.',qtd:1,min:350,max:1000},
+  {amb:'Cozinha',nome:'Depurador / Coifa',cat:'Essencial',pri:'Alta',obs:'Depurador recirculante dispensa duto; coifa exige instalação de duto.',qtd:1,min:400,max:1800},
+  {amb:'Cozinha',nome:'Lava-louças',cat:'Não Essencial',pri:'Baixa',obs:'Modelos compactos 6 serviços cabem em bancadas menores.',qtd:1,min:1200,max:3000},
+  {amb:'Cozinha',nome:'Mesa de jantar',cat:'Essencial',pri:'Alta',obs:'4 lugares aprox. 1,20×0,80 m. Extensível é ótima opção.',qtd:1,min:600,max:2500},
+  {amb:'Cozinha',nome:'Cadeiras',cat:'Essencial',pri:'Alta',obs:'4 cadeiras para a mesa de jantar.',qtd:4,min:150,max:500},
+  {amb:'Cozinha',nome:'Banquetas para bancada',cat:'Não Essencial',pri:'Baixa',obs:'2 banquetas se houver bancada/ilha para sentar.',qtd:2,min:120,max:400},
+  {amb:'Cozinha',nome:'Lixeira com pedal',cat:'Essencial',pri:'Média',obs:'12–15 L para uso diário na cozinha.',qtd:1,min:60,max:200},
+  {amb:'Cozinha',nome:'Copos',cat:'Essencial',pri:'Alta',obs:'Kit com 6–8 unidades. Considere copos para água, suco e vinho. Vidro temperado é mais durável.',qtd:1,min:40,max:180},
+  {amb:'Cozinha',nome:'Pratos',cat:'Essencial',pri:'Alta',obs:'Jogo com 6–8 peças (raso, fundo e sobremesa). Cerâmica ou porcelana são os mais práticos.',qtd:1,min:60,max:300},
+  {amb:'Quarto Casal',nome:'Cama box casal/queen',cat:'Essencial',pri:'Alta',obs:'Queen (1,58×1,98 m) ideal para quartos de 10–12 m².',qtd:1,min:800,max:3500},
+  {amb:'Quarto Casal',nome:'Colchão',cat:'Essencial',pri:'Alta',obs:'D33–D45, Queen 1,58×1,98 m. Invista em boa qualidade.',qtd:1,min:800,max:3000},
+  {amb:'Quarto Casal',nome:'Criado-mudo (x2)',cat:'Não Essencial',pri:'Média',obs:'Modelos estreitos 40–45 cm de profundidade.',qtd:2,min:150,max:600},
+  {amb:'Quarto Casal',nome:'Cômoda / gaveteiro',cat:'Não Essencial',pri:'Baixa',obs:'5–6 gavetas (80–100 cm larg.) costuma bastar.',qtd:1,min:400,max:1500},
+  {amb:'Quarto Casal',nome:'Espelho de parede',cat:'Essencial',pri:'Média',obs:'Espelho de corpo inteiro 40×160 cm ou painel.',qtd:1,min:150,max:700},
+  {amb:'Quarto Casal',nome:'Abajur / luminária de cabeceira (x2)',cat:'Não Essencial',pri:'Baixa',obs:'Iluminação direcional para cada lado da cama.',qtd:2,min:80,max:300},
+  {amb:'Escritório',nome:'Mesa de escritório',cat:'Essencial',pri:'Alta',obs:'Mesa em L (1,50×1,20 m) ou duas mesas de 1,20 m para 2 pessoas.',qtd:1,min:500,max:2500},
+  {amb:'Escritório',nome:'Cadeiras ergonômicas (x2)',cat:'Essencial',pri:'Alta',obs:'Apoio lombar e ajuste de altura são essenciais.',qtd:2,min:400,max:2000},
+  {amb:'Escritório',nome:'Monitores curvos (x2)',cat:'Essencial',pri:'Alta',obs:'27"–32". Verifique HDMI/DisplayPort. Suporte articulado recomendado.',qtd:2,min:800,max:2500},
+  {amb:'Escritório',nome:'Estante / prateleiras',cat:'Não Essencial',pri:'Média',obs:'Para livros e organização. Modelos de parede economizam espaço.',qtd:1,min:200,max:800},
+  {amb:'Área de Serviço',nome:'Máquina de lavar roupa',cat:'Essencial',pri:'Alta',obs:'10–12 kg para casal. Largura padrão 60 cm.',qtd:1,min:1200,max:3500},
+  {amb:'Área de Serviço',nome:'Tanque de lavar',cat:'Essencial',pri:'Média',obs:'Verifique se já existe instalação. ~50×40 cm.',qtd:1,min:150,max:500},
+  {amb:'Área de Serviço',nome:'Ferro de passar + suporte',cat:'Essencial',pri:'Média',obs:'Ferro a vapor com suporte retrátil ou tábua.',qtd:1,min:100,max:400},
+  {amb:'Área de Serviço',nome:'Armário de área de serviço',cat:'Não Essencial',pri:'Média',obs:'Para armazenar produtos de limpeza.',qtd:1,min:100,max:400},
+  {amb:'Banheiro / Lavabo',nome:'Espelho / armário espelhado',cat:'Essencial',pri:'Alta',obs:'Para cada banheiro. Armário espelhado amplia percepção de espaço.',qtd:2,min:100,max:500},
+  {amb:'Banheiro / Lavabo',nome:'Suporte para papel higiênico',cat:'Essencial',pri:'Alta',obs:'Simples de parede. Verifique se já vem instalado.',qtd:2,min:30,max:100},
+  {amb:'Banheiro / Lavabo',nome:'Porta-toalhas',cat:'Essencial',pri:'Alta',obs:'Barra de parede para toalha de rosto e banho.',qtd:2,min:40,max:150},
+  {amb:'Banheiro / Lavabo',nome:'Lixeira pequena',cat:'Essencial',pri:'Média',obs:'5–7 L para cada banheiro.',qtd:2,min:20,max:80},
+  {amb:'Geral / Tecnologia',nome:'Roteador Wi-Fi',cat:'Essencial',pri:'Alta',obs:'1 roteador dual-band cobre 68 m².',qtd:1,min:150,max:600},
+  {amb:'Geral / Tecnologia',nome:'Régua de tomadas',cat:'Essencial',pri:'Alta',obs:'3–4 réguas com proteção contra surto.',qtd:4,min:40,max:150},
+  {amb:'Geral / Tecnologia',nome:'Aspirador de pó',cat:'Essencial',pri:'Média',obs:'Aspirador sem fio ou robô para 68 m².',qtd:1,min:300,max:2000},
+  {amb:'Geral / Tecnologia',nome:'Ar-condicionado split',cat:'Essencial',pri:'Alta',obs:'Sala: 9.000–12.000 BTU; quartos: 7.000–9.000 BTU cada.',qtd:3,min:1200,max:3500},
+  {amb:'Geral / Tecnologia',nome:'Luminária teto / pendentes',cat:'Essencial',pri:'Alta',obs:'Verifique pontos de luz instalados em cada cômodo.',qtd:4,min:80,max:400},
+  {amb:'Geral / Tecnologia',nome:'Cortinas ou persianas',cat:'Essencial',pri:'Alta',obs:'Blackout nos quartos melhora o sono. Meça as janelas antes.',qtd:4,min:150,max:800},
+  {amb:'Geral / Tecnologia',nome:'Caixa de ferramentas',cat:'Não Essencial',pri:'Média',obs:'Kit básico: martelo, chaves, alicate, fita métrica.',qtd:1,min:80,max:300},
+  {amb:'Geral / Tecnologia',nome:'Parafusadeira elétrica',cat:'Não Essencial',pri:'Média',obs:'Parafusadeira/furadeira bivolt. Útil na montagem de móveis.',qtd:1,min:150,max:600},
 ];
- 
+
 const AMB_COLORS={'Sala':'#3B82F6','Cozinha':'#F59E0B','Quarto Casal':'#EC4899','Escritório':'#8B5CF6','Área de Serviço':'#10B981','Banheiro / Lavabo':'#06B6D4','Geral / Tecnologia':'#6B7280'};
-let itens=[],filtroAtivo='todos',tabAtiva='lista',compraItemId=null,nextId=200,toastTimer;
+let itens=[],filtroAtivo='todos',tabAtiva='lista',compraItemId=null,toastTimer;
 let formMode='add',editItemId=null,aiTimer=null,aiRunning=false,aiDone=false;
- 
+let token=null,permission='edit';
+
 function fmt(n){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:0,maximumFractionDigits:0}).format(n||0);}
- 
-function loadData(){
-  try{
-    const raw=localStorage.getItem(STORAGE_KEY);
-    if(raw){const p=JSON.parse(raw);itens=p.itens||INITIAL_DATA;nextId=p.nextId||(Math.max(...itens.map(i=>i.id))+1);}
-    else{itens=JSON.parse(JSON.stringify(INITIAL_DATA));saveData();}
-  }catch(e){itens=JSON.parse(JSON.stringify(INITIAL_DATA));}
+
+async function req(method,path,body){
+  const res=await fetch(`${API}${path}`,{method,headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`HTTP ${res.status}`);}
+  return res.json();
+}
+
+async function initApp(){
+  const params=new URLSearchParams(window.location.search);
+  token=params.get('lista');
+  const badge=document.getElementById('sync-badge');
+  if(!token){
+    badge.textContent='⏳ criando lista...';
+    try{
+      const list=await req('POST','/lists',{title:'Minha Mudança — Família Novais'});
+      token=list.edit_token;
+      window.history.replaceState({},'',`?lista=${token}`);
+      badge.textContent='⏳ importando itens...';
+      const bs=8;
+      for(let b=0;b<INITIAL_DATA.length;b+=bs){
+        const results=await Promise.all(INITIAL_DATA.slice(b,b+bs).map(i=>req('POST',`/lists/${token}/items`,{
+          nome:i.nome,amb:i.amb,cat:i.cat,pri:i.pri,qtd:i.qtd,
+          preco_min:i.min,preco_max:i.max,obs:i.obs||'',comprado:false,gasto:0,loja:''
+        })));
+        itens.push(...results);
+      }
+      permission='edit';
+      badge.textContent='✓ lista criada';
+      setTimeout(()=>badge.textContent='● ao vivo',2000);
+    }catch(e){showToast('Erro ao criar lista: '+e.message);badge.textContent='✗ erro';return;}
+  }else{
+    badge.textContent='⏳ carregando...';
+    try{
+      const data=await req('GET',`/lists/${token}`);
+      itens=data.items||[];
+      permission=data.permission||'view';
+      badge.textContent=permission==='edit'?'● ao vivo':'👁 visualização';
+    }catch(e){showToast('Lista não encontrada. Verifique o link.');badge.textContent='✗ erro';return;}
+  }
   renderAll();
 }
- 
-function saveData(){
-  try{
-    localStorage.setItem(STORAGE_KEY,JSON.stringify({itens,nextId}));
-    const b=document.getElementById('sync-badge');b.textContent='✓ salvo';
-    setTimeout(()=>b.textContent='● ao vivo',1500);
-  }catch(e){}
-}
- 
+
 function setTab(t){
   tabAtiva=t;
   ['lista','resumo','dash'].forEach(id=>document.getElementById('tab-'+id).style.display=(id===t)?'block':'none');
   document.querySelectorAll('.nav-tab').forEach((btn,i)=>btn.classList.toggle('active',['lista','resumo','dash'][i]===t));
   renderAll();
 }
- 
+
 function setFilter(el,f){filtroAtivo=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderLista();}
- 
+
 function getFiltered(){
   const q=(document.getElementById('search')?.value||'').toLowerCase().trim();
   return itens.filter(i=>{
@@ -393,10 +418,10 @@ function getFiltered(){
     return ms&&mf;
   });
 }
- 
+
 function renderMetricsLista(){
   const total=itens.length,comp=itens.filter(i=>i.comprado).length;
-  const tMin=itens.reduce((s,i)=>s+i.min*i.qtd,0),tMax=itens.reduce((s,i)=>s+i.max*i.qtd,0);
+  const tMin=itens.reduce((s,i)=>s+(i.preco_min||0)*i.qtd,0),tMax=itens.reduce((s,i)=>s+(i.preco_max||0)*i.qtd,0);
   const gasto=itens.filter(i=>i.comprado).reduce((s,i)=>s+(i.gasto||0),0);
   const pct=total?Math.round(comp/total*100):0;
   document.getElementById('metrics-lista').innerHTML=`
@@ -406,15 +431,15 @@ function renderMetricsLista(){
     <div class="metric blue"><div class="metric-label">Já gasto</div><div class="metric-value">${fmt(gasto)}</div><div class="metric-sub">${fmt(Math.max(0,tMin-gasto))} restante</div></div>`;
   document.getElementById('lista-sub').textContent=`${total-comp} item${total-comp!==1?'s':''} pendente${total-comp!==1?'s':''}`;
 }
- 
+
 function renderLista(){
   renderMetricsLista();
   const filtered=getFiltered();
   const container=document.getElementById('lista-items');
   if(!filtered.length){container.innerHTML='<div class="empty"><h3>Nenhum item encontrado</h3><p>Tente outro filtro ou busca</p></div>';return;}
   container.innerHTML=filtered.map(i=>`
-    <div class="item-row ${i.comprado?'comprado':''}" id="row-${i.id}" onclick="handleRowClick(event,${i.id})">
-      <div class="item-check ${i.comprado?'checked':''}" onclick="event.stopPropagation();toggleCompra(${i.id})">
+    <div class="item-row ${i.comprado?'comprado':''}" id="row-${i.id}" onclick="handleRowClick(event,'${i.id}')">
+      <div class="item-check ${i.comprado?'checked':''}" onclick="event.stopPropagation();toggleCompra('${i.id}')">
         <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 5.5L4.5 8.5L9.5 2.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="item-info">
@@ -430,27 +455,27 @@ function renderLista(){
       <div class="item-actions" onclick="event.stopPropagation()">
         <div class="item-price">
           ${i.comprado&&i.gasto?`<strong style="color:var(--green)">${fmt(i.gasto)}</strong><div class="item-price-sub">pago</div>`:
-          `<strong>${fmt(i.min*i.qtd)}</strong><div class="item-price-sub">até ${fmt(i.max*i.qtd)} · ${i.qtd}un</div>`}
+          `<strong>${fmt((i.preco_min||0)*i.qtd)}</strong><div class="item-price-sub">até ${fmt((i.preco_max||0)*i.qtd)} · ${i.qtd}un</div>`}
         </div>
-        ${!i.comprado?`<button class="btn btn-success btn-sm" onclick="openCompraModal(${i.id})">Comprei</button>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="openEditModal(${i.id})" title="Editar item">
+        ${!i.comprado?`<button class="btn btn-success btn-sm" onclick="openCompraModal('${i.id}')">Comprei</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="openEditModal('${i.id}')" title="Editar item">
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8.5 1.5L10.5 3.5L4 10H2V8L8.5 1.5Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="btn btn-danger btn-sm" onclick="confirmRemove(${i.id})" title="Remover">
+        <button class="btn btn-danger btn-sm" onclick="confirmRemove('${i.id}')" title="Remover">
           <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M1.5 1.5L9.5 9.5M9.5 1.5L1.5 9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         </button>
       </div>
     </div>`).join('');
 }
- 
+
 function handleRowClick(e,id){
   if(e.target.closest('.item-actions')||e.target.closest('.item-check'))return;
   openEditModal(id);
 }
- 
-// ── MODAL FORM (ADD + EDIT) ──────────────────────────────────────────────────
+
 function openAddModal(){
-  formMode='add'; editItemId=null; aiDone=false;
+  if(permission!=='edit'){showToast('Lista em modo visualização');return;}
+  formMode='add';editItemId=null;aiDone=false;
   document.getElementById('modal-form-title').textContent='Novo item';
   document.getElementById('modal-form-btn').textContent='Adicionar item';
   document.getElementById('ai-bar').style.display='flex';
@@ -466,10 +491,10 @@ function openAddModal(){
   document.getElementById('modal-form').style.display='flex';
   setTimeout(()=>document.getElementById('f-nome').focus(),100);
 }
- 
+
 function openEditModal(id){
-  const item=itens.find(i=>i.id===id); if(!item)return;
-  formMode='edit'; editItemId=id;
+  const item=itens.find(i=>i.id===id);if(!item)return;
+  formMode='edit';editItemId=id;
   document.getElementById('modal-form-title').textContent='Editar item';
   document.getElementById('modal-form-btn').textContent='Salvar alterações';
   document.getElementById('ai-bar').style.display='none';
@@ -478,14 +503,15 @@ function openEditModal(id){
   document.getElementById('f-cat').value=item.cat;
   document.getElementById('f-pri').value=item.pri;
   document.getElementById('f-qtd').value=item.qtd;
-  document.getElementById('f-min').value=item.min||'';
-  document.getElementById('f-max').value=item.max||'';
+  document.getElementById('f-min').value=item.preco_min||'';
+  document.getElementById('f-max').value=item.preco_max||'';
   document.getElementById('f-obs').value=item.obs||'';
   document.getElementById('modal-form').style.display='flex';
   setTimeout(()=>document.getElementById('f-nome').focus(),100);
 }
- 
-function submitForm(){
+
+async function submitForm(){
+  if(permission!=='edit'){showToast('Lista em modo visualização');return;}
   const nome=document.getElementById('f-nome').value.trim();
   if(!nome){alert('Nome do item é obrigatório.');return;}
   const data={
@@ -494,26 +520,32 @@ function submitForm(){
     pri:document.getElementById('f-pri').value,
     obs:document.getElementById('f-obs').value.trim(),
     qtd:Math.max(1,parseInt(document.getElementById('f-qtd').value)||1),
-    min:parseFloat(document.getElementById('f-min').value)||0,
-    max:parseFloat(document.getElementById('f-max').value)||0,
+    preco_min:parseFloat(document.getElementById('f-min').value)||0,
+    preco_max:parseFloat(document.getElementById('f-max').value)||0,
   };
-  if(formMode==='add'){
-    itens.push({id:nextId++,...data,comprado:false,gasto:0,loja:''});
-    closeModals();saveData();renderAll();showToast(`"${nome}" adicionado`);
-  } else {
-    const item=itens.find(i=>i.id===editItemId);
-    Object.assign(item,data);
-    closeModals();saveData();renderAll();showToast(`"${nome}" atualizado`);
-  }
+  const btn=document.getElementById('modal-form-btn');
+  btn.disabled=true;btn.textContent='Salvando...';
+  try{
+    if(formMode==='add'){
+      const item=await req('POST',`/lists/${token}/items`,data);
+      itens.push(item);
+      closeModals();renderAll();showToast(`"${nome}" adicionado`);
+    }else{
+      const item=await req('PATCH',`/lists/${token}/items/${editItemId}`,data);
+      const idx=itens.findIndex(i=>i.id===editItemId);
+      if(idx!==-1)itens[idx]=item;
+      closeModals();renderAll();showToast(`"${nome}" atualizado`);
+    }
+  }catch(e){showToast('Erro ao salvar: '+e.message);}
+  finally{btn.disabled=false;btn.textContent=formMode==='add'?'Adicionar item':'Salvar alterações';}
 }
- 
-// ── AI AUTOFILL ──────────────────────────────────────────────────────────────
+
 function setAIStatus(state,text){
   const el=document.getElementById('ai-status');
   el.className='ai-status'+(state==='loading'?' loading':state==='done'?' done':'');
   el.textContent=text||{aguardando:'aguardando',loading:'buscando...',done:'preenchido ✓',erro:'erro'}[state]||state;
 }
- 
+
 function scheduleAI(){
   if(formMode!=='add')return;
   const nome=document.getElementById('f-nome').value.trim();
@@ -522,7 +554,7 @@ function scheduleAI(){
   setAIStatus('aguardando','aguardando...');
   aiTimer=setTimeout(runAI,1200);
 }
- 
+
 async function runAI(){
   if(aiRunning)return;
   const nome=document.getElementById('f-nome').value.trim();
@@ -530,80 +562,91 @@ async function runAI(){
   const amb=document.getElementById('f-amb').value;
   const cat=document.getElementById('f-cat').value;
   const pri=document.getElementById('f-pri').value;
-  aiRunning=true; setAIStatus('loading');
+  aiRunning=true;setAIStatus('loading');
   try{
     const prompt=`Você é um assistente de compras para mudança residencial no Brasil em 2025.
 O usuário quer comprar: "${nome}" para o ambiente: ${amb}.
 Categoria: ${cat}. Prioridade: ${pri}.
- 
+
 Responda APENAS com JSON válido, sem markdown, sem texto adicional:
 {
   "min": <preço mínimo realista em reais, número inteiro>,
   "max": <preço máximo realista em reais, número inteiro>,
   "obs": "<dica prática sobre tamanho, modelo ou especificação recomendada, máx 120 caracteres>"
 }
- 
+
 Use preços de lojas brasileiras como Magazine Luiza, Casas Bahia, Tok&Stok, Leroy Merlin, Amazon BR.`;
- 
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:200,
-        messages:[{role:'user',content:prompt}]
-      })
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:prompt}]})
     });
-    const data=await resp.json();
-    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const d=await resp.json();
+    const text=(d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const clean=text.replace(/```json|```/g,'').trim();
     const parsed=JSON.parse(clean);
     if(parsed.min&&!document.getElementById('f-min').value)document.getElementById('f-min').value=parsed.min;
     if(parsed.max&&!document.getElementById('f-max').value)document.getElementById('f-max').value=parsed.max;
     if(parsed.obs&&!document.getElementById('f-obs').value.trim())document.getElementById('f-obs').value=parsed.obs;
     setAIStatus('done');
-  }catch(e){
-    setAIStatus('erro','não disponível');
-  }finally{aiRunning=false;}
+  }catch(e){setAIStatus('erro','não disponível');}
+  finally{aiRunning=false;}
 }
- 
-// ── COMPRA / TOGGLE ──────────────────────────────────────────────────────────
-function toggleCompra(id){
+
+async function toggleCompra(id){
+  if(permission!=='edit')return;
   const item=itens.find(i=>i.id===id);if(!item)return;
   if(!item.comprado){openCompraModal(id);}
-  else{item.comprado=false;item.gasto=0;item.loja='';saveData();renderAll();showToast('Item desmarcado');}
+  else{
+    try{
+      const updated=await req('PATCH',`/lists/${token}/items/${id}`,{comprado:false,gasto:0,loja:''});
+      const idx=itens.findIndex(i=>i.id===id);
+      if(idx!==-1)itens[idx]=updated;
+      renderAll();showToast('Item desmarcado');
+    }catch(e){showToast('Erro ao atualizar: '+e.message);}
+  }
 }
- 
+
 function openCompraModal(id){
   compraItemId=id;const item=itens.find(i=>i.id===id);
-  document.getElementById('compra-info').innerHTML=`<p>${item.amb}</p><strong>${item.nome}</strong><p class="est">Estimativa: ${fmt(item.min*item.qtd)} a ${fmt(item.max*item.qtd)} · ${item.qtd}un</p>`;
+  document.getElementById('compra-info').innerHTML=`<p>${item.amb}</p><strong>${item.nome}</strong><p class="est">Estimativa: ${fmt((item.preco_min||0)*item.qtd)} a ${fmt((item.preco_max||0)*item.qtd)} · ${item.qtd}un</p>`;
   document.getElementById('compra-valor').value='';document.getElementById('compra-loja').value='';
   document.getElementById('modal-compra').style.display='flex';
   setTimeout(()=>document.getElementById('compra-valor').focus(),100);
 }
- 
-function confirmarCompra(){
+
+async function confirmarCompra(){
   const valor=parseFloat(document.getElementById('compra-valor').value);
   if(!valor||valor<=0){alert('Informe o valor total pago.');return;}
   const loja=document.getElementById('compra-loja').value.trim();
-  const item=itens.find(i=>i.id===compraItemId);
-  item.comprado=true;item.gasto=valor;item.loja=loja;
-  closeModals();saveData();renderAll();showToast(`"${item.nome}" registrado por ${fmt(valor)}`);
+  const nome=itens.find(i=>i.id===compraItemId)?.nome||'Item';
+  try{
+    const updated=await req('PATCH',`/lists/${token}/items/${compraItemId}`,{comprado:true,gasto:valor,loja});
+    const idx=itens.findIndex(i=>i.id===compraItemId);
+    if(idx!==-1)itens[idx]=updated;
+    closeModals();renderAll();showToast(`"${nome}" registrado por ${fmt(valor)}`);
+  }catch(e){showToast('Erro ao registrar compra: '+e.message);}
 }
- 
-function confirmRemove(id){
+
+async function confirmRemove(id){
+  if(permission!=='edit')return;
   const item=itens.find(i=>i.id===id);if(!item)return;
   document.getElementById('confirm-msg').textContent=`Remover "${item.nome}" da lista? Esta ação não pode ser desfeita.`;
-  document.getElementById('confirm-ok').onclick=()=>{itens=itens.filter(i=>i.id!==id);closeModals();saveData();renderAll();showToast('Item removido');};
+  document.getElementById('confirm-ok').onclick=async()=>{
+    try{
+      await req('DELETE',`/lists/${token}/items/${id}`);
+      itens=itens.filter(i=>i.id!==id);
+      closeModals();renderAll();showToast('Item removido');
+    }catch(e){showToast('Erro ao remover: '+e.message);}
+  };
   document.getElementById('modal-confirm').style.display='flex';
 }
- 
-// ── RESUMO ───────────────────────────────────────────────────────────────────
+
 function renderResumo(){
   const ambs=[...new Set(itens.map(i=>i.amb))];
   document.getElementById('amb-cards').innerHTML=ambs.map(amb=>{
     const its=itens.filter(i=>i.amb===amb),comp=its.filter(i=>i.comprado).length;
-    const mn=its.reduce((s,i)=>s+i.min*i.qtd,0),mx=its.reduce((s,i)=>s+i.max*i.qtd,0);
+    const mn=its.reduce((s,i)=>s+(i.preco_min||0)*i.qtd,0),mx=its.reduce((s,i)=>s+(i.preco_max||0)*i.qtd,0);
     const gasto=its.filter(i=>i.comprado).reduce((s,i)=>s+(i.gasto||0),0);
     const pct=its.length?Math.round(comp/its.length*100):0,cor=AMB_COLORS[amb]||'#6B7280';
     return`<div class="amb-card">
@@ -617,7 +660,7 @@ function renderResumo(){
   const pris=['Alta','Média','Baixa'],pL={'Alta':'Comprar primeiro','Média':'Importante','Baixa':'Quando possível'};
   document.getElementById('pri-cards').innerHTML=pris.map(pri=>{
     const its=itens.filter(i=>i.pri===pri),comp=its.filter(i=>i.comprado).length;
-    const mn=its.reduce((s,i)=>s+i.min*i.qtd,0),pct=its.length?Math.round(comp/its.length*100):0;
+    const mn=its.reduce((s,i)=>s+(i.preco_min||0)*i.qtd,0),pct=its.length?Math.round(comp/its.length*100):0;
     const pend=its.filter(i=>!i.comprado);
     return`<div class="amb-card">
       <div class="amb-header"><div style="display:flex;align-items:center;gap:10px"><span class="tag tag-${pri.toLowerCase()}">${pri}</span><span style="font-size:12px;color:var(--text3)">${pL[pri]}</span></div><span class="amb-count">${its.length} itens</span></div>
@@ -628,15 +671,14 @@ function renderResumo(){
     </div>`;
   }).join('');
 }
- 
-// ── DASHBOARD ────────────────────────────────────────────────────────────────
+
 function renderDash(){
   const total=itens.length,comp=itens.filter(i=>i.comprado).length,pend=total-comp;
-  const tMin=itens.reduce((s,i)=>s+i.min*i.qtd,0),tMax=itens.reduce((s,i)=>s+i.max*i.qtd,0);
+  const tMin=itens.reduce((s,i)=>s+(i.preco_min||0)*i.qtd,0),tMax=itens.reduce((s,i)=>s+(i.preco_max||0)*i.qtd,0);
   const gasto=itens.filter(i=>i.comprado).reduce((s,i)=>s+(i.gasto||0),0);
   const pct=total?Math.round(comp/total*100):0,altaP=itens.filter(i=>!i.comprado&&i.pri==='Alta').length;
   const ambs=[...new Set(itens.map(i=>i.amb))];
-  const maxV=Math.max(...ambs.map(a=>itens.filter(i=>i.amb===a).reduce((s,i)=>s+i.min*i.qtd,0)));
+  const maxV=Math.max(...ambs.map(a=>itens.filter(i=>i.amb===a).reduce((s,i)=>s+(i.preco_min||0)*i.qtd,0)));
   const ultCompras=itens.filter(i=>i.comprado&&i.gasto>0).slice(-5).reverse();
   document.getElementById('dash-content').innerHTML=`
     <div class="metrics" style="margin-bottom:16px">
@@ -656,7 +698,7 @@ function renderDash(){
     <div class="dash-grid">
       <div class="card">
         <div class="card-title">Orçamento por ambiente</div>
-        ${ambs.map(amb=>{const v=itens.filter(i=>i.amb===amb).reduce((s,i)=>s+i.min*i.qtd,0);const w=maxV>0?Math.round(v/maxV*100):0;const cor=AMB_COLORS[amb]||'#6B7280';return`<div class="bar-row"><div class="bar-label">${amb.split('/')[0].trim()}</div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${cor}"></div></div><div class="bar-val">${fmt(v)}</div></div>`;}).join('')}
+        ${ambs.map(amb=>{const v=itens.filter(i=>i.amb===amb).reduce((s,i)=>s+(i.preco_min||0)*i.qtd,0);const w=maxV>0?Math.round(v/maxV*100):0;const cor=AMB_COLORS[amb]||'#6B7280';return`<div class="bar-row"><div class="bar-label">${amb.split('/')[0].trim()}</div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${cor}"></div></div><div class="bar-val">${fmt(v)}</div></div>`;}).join('')}
       </div>
       <div class="card">
         <div class="card-title">Resumo financeiro</div>
@@ -666,25 +708,24 @@ function renderDash(){
       </div>
     </div>`;
 }
- 
+
 function renderAll(){
   if(tabAtiva==='lista')renderLista();
   if(tabAtiva==='resumo')renderResumo();
   if(tabAtiva==='dash')renderDash();
 }
- 
+
 function closeModals(){['modal-form','modal-compra','modal-confirm'].forEach(id=>document.getElementById(id).style.display='none');clearTimeout(aiTimer);aiRunning=false;}
 function overlayClick(e,id){if(e.target.id===id)closeModals();}
- 
+
 function showToast(msg){
   clearTimeout(toastTimer);document.querySelectorAll('.toast').forEach(t=>t.remove());
   const t=document.createElement('div');t.className='toast';t.textContent=msg;
   document.body.appendChild(t);toastTimer=setTimeout(()=>t.remove(),3000);
 }
- 
+
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals();});
-window.addEventListener('storage',e=>{if(e.key===STORAGE_KEY&&e.newValue){try{const p=JSON.parse(e.newValue);itens=p.itens||itens;nextId=p.nextId||nextId;renderAll();showToast('Lista atualizada');}catch(err){}}});
-loadData();
+initApp();
 </script>
 </body>
 </html>
